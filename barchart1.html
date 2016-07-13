@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+	<style>
+  .bar{
+    fill:#FF6347;
+  }
+  .bar:hover{
+    fill:#2B9EB3;
+  }
+  .axis {
+    font-size: 9px;
+    font-family: 'Roboto Condensed', sans-serif;
+  }
+  .axis path,
+  .axis line {
+    fill:#2B9EB3;
+    opacity: 0.3;
+    stroke: #000;
+
+  }
+</style>
+</head>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+// set the dimensions of the canvas
+var margin = {top: 20, right: 20, bottom: 120, left: 200},
+    width = 650 - margin.left - margin.right,
+    height = 450 - margin.top - margin.bottom;
+
+// set the ranges
+var x = d3.scale.ordinal().rangeRoundBands([-5, width], 0.2);
+var y = d3.scale.linear().range([height, 0]);
+
+// define the axis
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(12);
+
+
+// add the SVG element
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+    var chart = new CanvasJS.Chart("chartContainer", {
+           title: {
+               text: "Mobile Phones Used For",
+               fontFamily: "Verdana",
+               fontColor: "Peru",
+               fontSize: 28
+
+           },
+           animationEnabled: true,
+           axisY: {
+               tickThickness: 0,
+               lineThickness: 0,
+               valueFormatString: " ",
+               gridThickness: 0
+           },
+           axisX: {
+               tickThickness: 0,
+               lineThickness: 0,
+               labelFontSize: 18,
+               labelFontColor: "Peru"
+
+           },
+           data: [
+           {
+               indexLabelFontSize: 26,
+               toolTipContent: "<span style='\"'color: {color};'\"'><strong>{indexLabel}</strong></span><span style='\"'font-size: 20px; color:peru '\"'><strong>{y}</strong></span>",
+
+               indexLabelPlacement: "inside",
+               indexLabelFontColor: "white",
+               indexLabelFontWeight: 600,
+               indexLabelFontFamily: "Verdana",
+               color: "#62C9C3",
+               type: "bar",
+               dataPoints: [
+                   { y: 21, label: "21%", indexLabel: "Video" },
+                   { y: 25, label: "25%", indexLabel: "Dining" },
+                   { y: 33, label: "33%", indexLabel: "Entertainment" },
+                   { y: 36, label: "36%", indexLabel: "News" },
+                   { y: 42, label: "42%", indexLabel: "Music" },
+                   { y: 49, label: "49%", indexLabel: "Social Networking" },
+                   { y: 50, label: "50%", indexLabel: "Maps/ Search" },
+                   { y: 55, label: "55%", indexLabel: "Weather" },
+                   { y: 61, label: "61%", indexLabel: "Games" }
+
+
+               ]
+           }
+           ]
+       });
+
+       chart.render();
+   }
+// load the data
+d3.json("data.json", function(error, data) {
+    data.forEach(function(d) {
+        d["Country Name"] = d["Country Name"];
+        d["Population (Millions) - 2013"] = +d["Population (Millions) - 2013"];
+    });
+
+  // scale the range of the data
+  x.domain(data.map(function(d) { return d["Country Name"]; }));
+  y.domain([0, d3.max(data, function(d) { return d["Population (Millions) - 2013"]; })]);
+
+  // add axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-1.9em")
+      .attr("dy", "-0.5em")
+      .attr("transform", "rotate(-90)" );
+
+
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -50)
+        .attr("x", -100)
+      .attr("dy", ".21em")
+      .style("text-anchor", "end")
+      .text("Population (Millions) - 2013");
+
+
+  // Add bar chart
+  svg.selectAll("bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d["Country Name"]); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d["Population (Millions) - 2013"]); })
+      .attr("height", function(d) { return height - y(d["Population (Millions) - 2013"]); });
+
+});
+
+</script>
+
+</body>

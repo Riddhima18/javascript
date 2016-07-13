@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+	<style>
+  .bar{
+    fill:#FF6347;
+  }
+  .bar:hover{
+    fill:#2B9EB3;
+  }
+  .axis {
+    font-size: 9px;
+    font-family: 'Roboto Condensed', sans-serif;
+  }
+  .axis path,
+  .axis line {
+    fill:#2B9EB3;
+    opacity: 0.3;
+    stroke: #000;
+	  shape-rendering: crispEdges;
+  }
+</style>
+</head>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+// set the dimensions of the canvas
+var margin = {top: 20, right: 20, bottom: 120, left: 200},
+    width = 650 - margin.left - margin.right,
+    height = 450 - margin.top - margin.bottom;
+
+// set the ranges
+var x = d3.scale.ordinal().rangeRoundBands([-6, width], 0.2);
+var y = d3.scale.linear().range([height, 0]);
+
+// define the axis
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10);
+
+
+// add the SVG element
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+aggregate = {"South America":{"Population (Millions) 2013":243.23000000000002,"GDP Billions (USD) 2013":3013.08},"Australia":{"Population (Millions) 2013":23.3,"GDP Billions (USD) 2013":1497.22},"North America":{"Population (Millions) 2013":470.25,"GDP Billions (USD) 2013":19763.97},"Asia":{"Population (Millions) 2013":3076.4399999999996,"GDP Billions (USD) 2013":19248.05},"Europe":{"Population (Millions) 2013":487.9599999999999,"GDP Billions (USD) 2013":14275.670000000002},"Africa":{"Population (Millions) 2013":53.16,"GDP Billions (USD) 2013":366.24}};
+// load the data
+// d3.json("data1.json", function(error, data) {
+//     data.forEach(function(d) {
+//         d["Country Name"] = d["Country Name"];
+//         d["GDP Billions (US$) - 2013"] = +d["GDP Billions (US$) - 2013"];
+//     });
+  // scale the range of the data
+  x.domain(d3.keys(aggregate).map(function(key){return key;}));
+  // y.domain([0,d3.max(data, function(d) { return d["GDP Billions (US$) - 2013"]; })]);
+	y.domain(d3.extent(d3.keys(aggregate).map(function(key){
+		return aggregate[key]["Population (Millions) 2013"]; })));
+  // add axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-1.9em")
+      .attr("dy", "-0.5em")
+      .attr("transform", "rotate(-90)" );
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -50)
+        .attr("x", -100)
+      .attr("dy", ".21em")
+      .style("text-anchor", "end")
+      .text("Population (Millions) 2013");
+
+
+  //console.log("B4 going into svg call");
+  svg.selectAll("bar")
+      .data(d3.keys(aggregate))
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(key) { return x(key); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(key) {  return y(aggregate[key]["Population (Millions) 2013"]); })
+      .attr("height", function(key) { return height - y(aggregate[key]["Population (Millions) 2013"]); });
+
+// });
+</script>
+</body>

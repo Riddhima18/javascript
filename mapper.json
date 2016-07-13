@@ -1,0 +1,22 @@
+{
+ "India":"Asia",
+ "China":"Asia",
+ "Indonesia":"Asia",
+ "Japan":"Asia",
+ "Saudi Arabia":"Asia",
+ "Republic of Korea":"Asia",
+ "Italy":"Europe",
+ "France":"Europe",
+ "Germany":"Europe",
+ "Turkey":"Europe",
+ "United Kingdom":"Europe",
+ "Russia":"Europe",
+ "South Africa":"Africa",
+ "USA":"North America",
+ "Canada":"North America",
+ "Mexico":"North America",
+ "Argentina":"South America",
+ "Brazil":"South America",
+ "Australia":"Australia",
+ "Antarctica":"Antarctica"
+}
